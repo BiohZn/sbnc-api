@@ -38,12 +38,12 @@ class sbnc {
 
 		if ($this->socket == FALSE) {
 			$this->jsn->error('Socket could not be connected.');
-			$this->error = True;
+			die();
 		}
 
-		if (!@fputs($this->socket, "RPC_IFACE\n") && !$this->error) {
+		if (!@fputs($this->socket, "RPC_IFACE\n")) {
 			$this->jsn->error('Cannot connect to sBNC Server');
-			$this->error = True;
+			die();
 		}
 
 		while (($line = @fgets($this->socket)) != FALSE) {
@@ -53,7 +53,7 @@ class sbnc {
 
 			if (strstr($line, "[RPC_BLOCK]") != FALSE) {
 				$this->jsn->error('Runtime error occured in the RPC system: This IP address is blocked.');
-				$this->error = True;
+				die();
 			}
 		}
 	}
@@ -64,7 +64,6 @@ class sbnc {
 
 
 	function CallAs($user, $command, $parameters = array()) {
-		if (!$this->error) {
 		if ($user == FALSE) {
 			$cmd = array($this->user, $this->pass);
 		} else {
@@ -79,7 +78,8 @@ class sbnc {
 		$line = fgets($this->socket, 128000);
 
 		if ($line === false) {
-			die('Transport layer error occured in the RPC system: fgets() failed.');
+			$this->jsn->error('Transport layer error occured in the RPC system: fgets() failed.');
+			die();
 		}
 
 
@@ -88,7 +88,8 @@ class sbnc {
 		$parsedResponse = itype_parse($line);
 
 		if ($parsedResponse[0] == 'empty') {
-			die('IType parsing error occured in RPC system when parsing the string "' . $line . '"');
+			$this->jsn->error('IType parsing error occured in RPC system when parsing the string "' . $line . '"');
+			die();
 		}
 
 		$response = itype_flat($parsedResponse);
@@ -97,12 +98,11 @@ class sbnc {
 			$code = GetCode($response);
 
 			if ($code != 'RPC_ERROR') {
-				die('Runtime error occured in the RPC system: [' . $code . '] ' . GetResult($response));
+				$this->jsn->error('Runtime error occured in the RPC system: [' . $code . '] ' . GetResult($response));
+				die();
 			}
 		}
-
 		return $response;
-		} else { $this->jsn->error('Error in sBNC connection'); }
 	}
 
 	function Call($command, $parameters = array()) {
