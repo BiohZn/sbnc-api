@@ -1,5 +1,16 @@
 <?php
 
+/*
+200 OK
+    Command completed successfully.
+400 Bad Request
+    Invalid URL, missing argument etc.
+404 Not found
+    object does not exist.
+500 Internal Server Error
+    an error has occurred.
+*/
+
 class json {
         
     function show($message) {
@@ -9,7 +20,7 @@ class json {
     function success($message) {
         $message = json_encode(array(
             'head' => array(
-                'status' => 1
+                'status' => 200
             ),
             'body' => array(
                 'message' => $message
@@ -18,7 +29,7 @@ class json {
         $this->show($message);
     }
     
-    function error($message, $code=404) {
+    function error($message, $code=400) {
         $message = json_encode(array(
             'head' => array(
                 'status' => 0
