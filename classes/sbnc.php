@@ -1,5 +1,4 @@
 <?php
-
 /*******************************************************************************
  * shroudBNC - an object-oriented framework for IRC                            *
  * Copyright (C) 2005-2011 Gunnar Beutner                                      *

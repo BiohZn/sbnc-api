@@ -1,5 +1,4 @@
 <?php
-
 /*
 200 OK
     Command completed successfully.
@@ -10,9 +9,8 @@
 500 Internal Server Error
     an error has occurred.
 */
-
 class json {
-        
+
     function show($message) {
         header('Content-Type: application/json');
         print $message;
@@ -28,7 +26,7 @@ class json {
         ));
         $this->show($message);
     }
-    
+
     function error($message, $code=400) {
         $message = json_encode(array(
             'head' => array(
