@@ -2,9 +2,9 @@
 
 class main extends controller {
 
-    function index() {
+	function index() {
 		$this->json->error('Action not specified');
-    }
+	}
 }
 
 ?>

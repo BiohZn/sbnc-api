@@ -3,6 +3,7 @@
 class apiuser {
 
 	var $config, $json;
+	var $details;
 
 	function __construct() {
 
@@ -18,5 +19,28 @@ class apiuser {
 			$this->json->error('Unable to select database', 500);
 			die();
 		}
+
+		if (empty($_POST['apikey'])) {
+			$this->json->error('No API key supplied');
+			die();
+		}
+
+		$apikey = mysql_real_escape_string($_POST['apikey']);
+		$remote = $_SERVER['REMOTE_ADDR'];
+
+		$details = mysql_query("SELECT id, ipaddr, access FROM apiusers WHERE apikey = $apikey LIMIT 1");
+		if (mysql_num_rows($details) != 1) {
+			$this->json->error('Faulty apikey');
+			die();
+		}
+
+		$details = mysql_row($details);
+
+		if ($details['ipaddr'] != $remote) {
+			$this->json->error('API Call from unkown host');
+			die();
+		}
+
+		$this->details = $details;
 	}
 }
