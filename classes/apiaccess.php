@@ -4,7 +4,7 @@ class apiaccess {
 
 	var $config, $json;
 	var $details;
-	var $apikey, $ip;
+	var $apikey, $ip, $bnclimit;
 
 	function __construct() {
 
@@ -31,7 +31,7 @@ class apiaccess {
 
 		$this->apikey = $apikey;
 
-		$sql = "SELECT id, ipaddr, access FROM apiusers WHERE apikey = '$apikey' LIMIT 1";
+		$sql = "SELECT id, ipaddr, access, bncs, bnclimit FROM apiusers WHERE apikey = '$apikey' LIMIT 1";
 		$details = mysql_query($sql);
 		if (mysql_num_rows($details) != 1) {
 			$this->json->error('Faulty apikey');
@@ -40,6 +40,8 @@ class apiaccess {
 
 		$details = mysql_fetch_array($details);
 
+		$this->bnclimit = $details['bnclimit'];
+		$this->bncs = $details['bncs'];
 		$this->ip = $details['ipaddr'];
 
 		if ($this->ip != $remote) {
@@ -73,10 +75,11 @@ class apiaccess {
 		$ip = mysql_real_escape_string($ip);
 		$check = mysql_query("SELECT id FROM apiusers WHERE ipaddr='$ip' LIMIT 1");
 		return (mysql_num_rows($check) > 0);
-//		if (mysql_num_rows($check) > 0) {
-//			return True;
-//		} else {
-//			return False;
-//		}
+	}
+
+	function validName($name) {
+		$name = mysql_real_escape_string($name);
+		$check = mysql_query("SELECT id FROM apiusers WHERE name='$name' LIMIT 1");
+		return (mysql_num_rows($check) > 0);
 	}
 }

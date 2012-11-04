@@ -10,6 +10,11 @@ class user extends controller {
 		$user = $_GET['ident'];
 		$pass = $_GET['password'];
 
+		if ($this->apiaccess->bncs == $this->apiaccess->bnclimit) {
+			$this->json->error('Bouncer limit reached');
+			die();
+		}
+
 		if (empty($user) || empty($pass)) {
 			$this->json->error('Missing arguments');
 			die();
@@ -20,6 +25,8 @@ class user extends controller {
 			die();
 		}
 
+		$apikey = $this->apiaccess->apikey;
+		mysql_query("UPDATE apiusers SET bncs=bncs+1 WHERE apikey='$apikey'");
 		$this->sbnc->Call('adduser', array($user, $pass));
 		$this->json->success('User successfully added');
 
@@ -38,6 +45,8 @@ class user extends controller {
 			die();
 		}
 
+		$apikey = $this->apiaccess->apikey;
+		mysql_query("UPDATE apiusers SET bncs=bncs-1 WHERE apikey='$apikey'");
 		$this->sbnc->Call('deluser', array($user));
 		$this->json->success('User successfully deleted');
 	}
