@@ -7,15 +7,15 @@ class user extends controller {
 	}
 
 	function add() {
-		$user = $_POST['ident'];
-		$pass = $_POST['password'];
+		$user = $_GET['ident'];
+		$pass = $_GET['password'];
 
 		if (empty($user) || empty($pass)) {
 			$this->json->error('Missing arguments');
 			die();
 		}
 
-		if (!$this->bnc->validUser($user)) {
+		if ($this->bnc->validUser($user)) {
 			$this->json->error('Ident already in use');
 			die();
 		}
@@ -23,6 +23,23 @@ class user extends controller {
 		$this->sbnc->Call('adduser', array($user, $pass));
 		$this->json->success('User successfully added');
 
+	}
+
+	function del() {
+		$user = $_GET['ident'];
+
+		if (empty($user)) {
+			$this->json->error('Missing arguments');
+			die();
+		}
+
+		if (!$this->bnc->validUser($user)) {
+			$this->json->error('No such user');
+			die();
+		}
+
+		$this->sbnc->Call('deluser', array($user));
+		$this->json->success('User successfully deleted');
 	}
 }
 ?>

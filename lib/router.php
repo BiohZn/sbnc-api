@@ -4,11 +4,11 @@ require_once 'lib/controller.php';
 require_once 'lib/json.php';
 
 class router{
-    
+
     function __construct() {
-        
+
         $this->json = new json();
-        
+
         $params = $this->url_array($_SERVER['PATH_INFO']);
         if (!$params) {
             $reqClass = 'main';

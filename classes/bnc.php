@@ -12,7 +12,7 @@ class bnc {
 		$users = strtolower($this->sbnc->Call('tcl', array('bncuserlist')));
 		$users = explode(" ", $users);
 		$user = strtolower($user);
-		return !in_array($user, $users);
+		return in_array($user, $users);
 	}
 
 }
