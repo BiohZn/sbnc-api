@@ -15,13 +15,15 @@ class json {
         header('Content-Type: application/json');
         print $message;
     }
-    function success($message) {
+    function success($message, $data=false) {
         $message = json_encode(array(
             'head' => array(
-                'status' => 200
+                'success' => true
             ),
             'body' => array(
-                'message' => $message
+				'code'	=> 200,
+                'message' => $message,
+				'data' => $data
             )
         ));
         $this->show($message);
@@ -30,11 +32,12 @@ class json {
     function error($message, $code=400) {
         $message = json_encode(array(
             'head' => array(
-                'status' => 0
+                'success' => false
             ),
             'body' => array(
-                'error_code' => $code,
-                'error_message' => $message
+                'code' => $code,
+                'message' => $message,
+				'data' => false
             )
         ));
         $this->show($message);
